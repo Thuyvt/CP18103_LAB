@@ -8,6 +8,7 @@ import Model.NguoiDung;
 import Service.NDService;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -24,11 +25,15 @@ public class QLND extends javax.swing.JFrame {
      */
     public QLND() {
         initComponents();
-        // Lay danh sach nguoi dung tu service
-        listND = service.getListNguoiDung();
         
         // Khoi tao gia tri cho defaultTable
         defaultTable = (DefaultTableModel) tblListNguoiDung.getModel();
+        
+        // Hien thi du lieu khi khoi day chuong trinh
+        fillToTable();
+        
+        // Hien thi phan tu vi tri thu 2
+        fillToForm(2);
     }
 
     /**
@@ -104,6 +109,11 @@ public class QLND extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tblListNguoiDung.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblListNguoiDungMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblListNguoiDung);
 
         jLabel6.setText("Trang thai");
@@ -120,6 +130,11 @@ public class QLND extends javax.swing.JFrame {
         });
 
         btnNhap.setText("Nhap");
+        btnNhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhapActionPerformed(evt);
+            }
+        });
 
         btnSua.setText("Sua");
 
@@ -130,6 +145,11 @@ public class QLND extends javax.swing.JFrame {
         btnTim.setText("Tim");
 
         cboViTriCV.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sinh vien", "Giang vien", "Nhan vien" }));
+        cboViTriCV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboViTriCVActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -234,16 +254,108 @@ public class QLND extends javax.swing.JFrame {
         // TODO add your handling code here:
         fillToTable();
     }//GEN-LAST:event_btnXuatMouseClicked
-    
+
+    private void btnNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapActionPerformed
+        if (!validateND()) {
+            return;
+        }
+        // TODO add your handling code here:
+        NguoiDung nd = new NguoiDung();
+        // Lay gia tri tu txtUserName.getText gan cho thuoc tinh userName 
+        // cua nguoidung
+        nd.setUserName(txtUserName.getText().trim());
+        // Lay gia tri tu txtEmail.getText gan cho thuoc tinh email
+        // cua nguoidung        
+        nd.setEmail(txtEmail.getText().trim());
+        // Lay gia tri txtPassword.getText gan cho thuoc tinh password
+        // cua nguoidung
+        nd.setPassWord(txtPassword.getText().trim());
+        
+        // C1:
+        if (rdoUser.isSelected()) {
+            nd.setQuyen(1);
+        }  else {
+            nd.setQuyen(2);
+        }
+        // C2:
+        nd.setQuyen(rdoAdmin.isSelected() ? 2 : 1);
+        // Checkbox trang thai 
+        nd.setStatus(chkTrangThai.isSelected());
+        // Lay gia tri tu comboBox
+        nd.setViTri(cboViTriCV.getSelectedItem().toString());
+        
+        // KHAI BAO DOI TUONG NGUOI DUNG
+//        NguoiDung nd1 = new NguoiDung(txtUserName.getText(),
+//                txtEmail.getText(), txtPassword.getText(), 
+//                cboViTriCV.getSelectedItem().toString(), 
+//                rdoUser.isSelected() ? 1 : 2, chkTrangThai.isSelected());
+        // Goi service them doi tuong nguoi dung moi
+        service.add(nd);
+        // Do du lieu len tren bang
+        fillToTable();
+    }//GEN-LAST:event_btnNhapActionPerformed
+
+    private void tblListNguoiDungMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListNguoiDungMouseClicked
+        // TODO add your handling code here:
+        // Lay ra vi tri dong duoc click chon
+        int rowIndex = tblListNguoiDung.getSelectedRow();
+        
+        // Do du lieu len bang
+        if (rowIndex >= 0 && rowIndex < listND.size()) {
+                fillToForm(rowIndex);
+        }
+    }//GEN-LAST:event_tblListNguoiDungMouseClicked
+
+    private void cboViTriCVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboViTriCVActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboViTriCVActionPerformed
+    // 
+    private void fillToForm(int rowIndex) {
+        // Lay ra doi tuong nguoi dung tai rowIndex
+        NguoiDung nd = listND.get(rowIndex);
+        // Do thuoc tinh userName len txtUserName
+        txtUserName.setText(nd.getUserName());
+        // Do thuoc tinh email len txtEmail
+        txtEmail.setText(nd.getEmail());
+        // Do thuoc tinh password len txtPassword
+        txtPassword.setText(nd.getPassWord());
+        // Chon User khi quyen = 1
+        if (nd.getQuyen() == 1) {
+            rdoUser.setSelected(true);
+        } else {
+            rdoAdmin.setSelected(true);
+        }
+        // Do thuoc tinh trang thai len chkTrangThai
+        chkTrangThai.setSelected(nd.isStatus());
+        // Do thuoc tinh vi tri len cboViTriCV
+        cboViTriCV.setSelectedItem(nd.getViTri());
+    }
     // DO DU LIEU VAO BANG
     private void fillToTable() {
-//      Do du lieu tu dong dau tien
+        // Do du lieu tu dong dau tien
         defaultTable.setRowCount(0);
+        // Lay danh sach nguoi dung tu service
+        listND = service.getListNguoiDung();
+        
         for (NguoiDung nd : listND) {
             defaultTable.addRow(new Object[] { nd.getUserName(), nd.getEmail(), nd.getPassWord(), 
                                                                 nd.getViTri(), nd.getQuyen() == 1 ? "User" : "Admin", nd.isStatus()
             });
         }
+    }
+    
+    private boolean validateND() {
+        if (txtUserName.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username khong duoc de trong");
+            return false;
+        } else if (txtEmail.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Email khong duoc de trong");
+            return false;
+        } else if (txtPassword.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Password khong duoc de trong");
+            return false;
+        }
+        return true;
     }
     /**
      * @param args the command line arguments

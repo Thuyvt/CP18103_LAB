@@ -36,4 +36,7 @@ public class NDService {
             return listNguoiDung;
         }
         
+        public void add(NguoiDung nd) {
+            listNguoiDung.add(nd);
+        } 
 }
