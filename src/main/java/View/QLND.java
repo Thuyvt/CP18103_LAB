@@ -137,8 +137,18 @@ public class QLND extends javax.swing.JFrame {
         });
 
         btnSua.setText("Sua");
+        btnSua.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSuaMouseClicked(evt);
+            }
+        });
 
         btnXoa.setText("Xoa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnSapXep.setText("Sap xep");
 
@@ -259,30 +269,8 @@ public class QLND extends javax.swing.JFrame {
         if (!validateND()) {
             return;
         }
-        // TODO add your handling code here:
-        NguoiDung nd = new NguoiDung();
-        // Lay gia tri tu txtUserName.getText gan cho thuoc tinh userName 
-        // cua nguoidung
-        nd.setUserName(txtUserName.getText().trim());
-        // Lay gia tri tu txtEmail.getText gan cho thuoc tinh email
-        // cua nguoidung        
-        nd.setEmail(txtEmail.getText().trim());
-        // Lay gia tri txtPassword.getText gan cho thuoc tinh password
-        // cua nguoidung
-        nd.setPassWord(txtPassword.getText().trim());
-        
-        // C1:
-        if (rdoUser.isSelected()) {
-            nd.setQuyen(1);
-        }  else {
-            nd.setQuyen(2);
-        }
-        // C2:
-        nd.setQuyen(rdoAdmin.isSelected() ? 2 : 1);
-        // Checkbox trang thai 
-        nd.setStatus(chkTrangThai.isSelected());
-        // Lay gia tri tu comboBox
-        nd.setViTri(cboViTriCV.getSelectedItem().toString());
+        // Goi phuong thuc lay du lieu tu form
+        NguoiDung nd = getDuLieuTuForm();
         
         // KHAI BAO DOI TUONG NGUOI DUNG
 //        NguoiDung nd1 = new NguoiDung(txtUserName.getText(),
@@ -291,6 +279,7 @@ public class QLND extends javax.swing.JFrame {
 //                rdoUser.isSelected() ? 1 : 2, chkTrangThai.isSelected());
         // Goi service them doi tuong nguoi dung moi
         service.add(nd);
+        
         // Do du lieu len tren bang
         fillToTable();
     }//GEN-LAST:event_btnNhapActionPerformed
@@ -309,6 +298,40 @@ public class QLND extends javax.swing.JFrame {
     private void cboViTriCVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboViTriCVActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cboViTriCVActionPerformed
+
+    private void btnSuaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSuaMouseClicked
+        // TODO add your handling code here:
+        // Lay gia tri moi cua doi tuong NguoiDung tren control
+        NguoiDung nguoiDung = getDuLieuTuForm();
+        // Lay index doi tuong duoc lua chon trong bang
+        int rowIndex = tblListNguoiDung.getSelectedRow();
+        // 
+        System.out.println(rowIndex);
+        // Cap nhat doi tuong moi vao vi tri da chon
+        service.update(rowIndex, nguoiDung);
+        // Do du lieu danh sach moi len table
+        fillToTable();
+    }//GEN-LAST:event_btnSuaMouseClicked
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        // TODO add your handling code here:
+        // Lay index doi tuong can xoa
+        int rowIndex = tblListNguoiDung.getSelectedRow();
+//        System.out.println(rowIndex);
+        if (rowIndex >= 0) {
+            // thuc hien xoa doi tuong
+            // 0: Yes; 1: No; 2: Cancel
+            int confirm = JOptionPane.showConfirmDialog(this, "Ban co chac muon xoa khong");
+            if (confirm == 0) {
+                // xoa doi tuong thong qua index
+                service.delete(rowIndex);
+                // Do du lieu moi len bang
+                fillToTable();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Phai chon doi tuong can xoa");
+        }
+    }//GEN-LAST:event_btnXoaActionPerformed
     // 
     private void fillToForm(int rowIndex) {
         // Lay ra doi tuong nguoi dung tai rowIndex
@@ -356,6 +379,35 @@ public class QLND extends javax.swing.JFrame {
             return false;
         }
         return true;
+    }
+    
+    private NguoiDung getDuLieuTuForm() {
+        // TODO add your handling code here:
+        NguoiDung nd = new NguoiDung();
+        // Lay gia tri tu txtUserName.getText gan cho thuoc tinh userName 
+        // cua nguoidung
+        nd.setUserName(txtUserName.getText().trim());
+        // Lay gia tri tu txtEmail.getText gan cho thuoc tinh email
+        // cua nguoidung        
+        nd.setEmail(txtEmail.getText().trim());
+        // Lay gia tri txtPassword.getText gan cho thuoc tinh password
+        // cua nguoidung
+        nd.setPassWord(txtPassword.getText().trim());
+        
+        // C1:
+        if (rdoUser.isSelected()) {
+            nd.setQuyen(1);
+        }  else {
+            nd.setQuyen(2);
+        }
+        // C2:
+        nd.setQuyen(rdoAdmin.isSelected() ? 2 : 1);
+        // Checkbox trang thai 
+        nd.setStatus(chkTrangThai.isSelected());
+        // Lay gia tri tu comboBox
+        nd.setViTri(cboViTriCV.getSelectedItem().toString());
+        
+        return nd;
     }
     /**
      * @param args the command line arguments
@@ -417,4 +469,5 @@ public class QLND extends javax.swing.JFrame {
     private javax.swing.JTextField txtPassword;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
+
 }

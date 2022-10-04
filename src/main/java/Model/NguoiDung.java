@@ -4,6 +4,8 @@
  */
 package Model;
 
+import java.util.Objects;
+
 /**
  *
  * @author ThuyVT
@@ -79,6 +81,43 @@ public class NguoiDung {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NguoiDung other = (NguoiDung) obj;
+        if (this.quyen != other.quyen) {
+            return false;
+        }
+        if (this.status != other.status) {
+            return false;
+        }
+        if (!Objects.equals(this.userName, other.userName)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.passWord, other.passWord)) {
+            return false;
+        }
+        return Objects.equals(this.viTri, other.viTri);
+    }
+    
     
     
 }
