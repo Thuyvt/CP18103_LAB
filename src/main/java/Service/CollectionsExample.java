@@ -6,6 +6,8 @@ package Service;
 
 import Model.NguoiDung;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -83,5 +85,29 @@ public class CollectionsExample {
         listNguoiDung.remove(removeItem);
 //        listNguoiDung.removeIf(item -> Objects.equals(item, removeItem));
         System.out.println("Ds moi: " + listNguoiDung.size());
+        // SAP XEP XUOI ASC
+        Comparator com = new Comparator<NguoiDung>() {
+            @Override
+            public int compare(NguoiDung o1, NguoiDung o2) {
+                return o1.getEmail().compareTo(o2.getEmail());
+            }
+        };
+        Collections.sort(listNguoiDung, com);
+        // SAP XEP NGUOC DESC
+        Collections.sort(listNguoiDung, new Comparator<NguoiDung>() {
+            @Override
+            public int compare(NguoiDung o1, NguoiDung o2) {
+                return o2.getEmail().compareTo(o1.getEmail());
+            }
+        });
+        // C2: Implements INTERFACE Comparable ben class doi tuong
+        // Trien khai tieu tri so sanh
+        // Sap xep tang dan - ASC
+        Collections.sort(listNguoiDung);
+        
+        // In danh sach
+        for (NguoiDung nd : listNguoiDung) {
+            System.out.println("tk: " + nd.getUserName() + " - email: " + nd.getEmail());
+        }
     }
 }

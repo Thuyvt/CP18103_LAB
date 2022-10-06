@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * @author ThuyVT
  */
-public class NguoiDung {
+public class NguoiDung implements Comparable<NguoiDung>{
     private String userName;
     private String email;
     private String passWord;
@@ -116,6 +116,11 @@ public class NguoiDung {
             return false;
         }
         return Objects.equals(this.viTri, other.viTri);
+    }
+
+    @Override
+    public int compareTo(NguoiDung o) {
+        return this.userName.compareTo(o.getUserName());
     }
     
     
